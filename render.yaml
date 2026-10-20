@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: kaden-concierge
+    runtime: docker
+    plan: starter
+    region: singapore
+    numInstances: 1
+    autoDeployTrigger: "off"
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    # No public HTTP health route: all application routes require login.
+    # Render uses its default TCP readiness check; Docker also checks authenticated HTTP.
+    envVars:
+      - key: APP_PASSWORD
+        generateValue: true
+      - key: DATA_DIR
+        value: /var/data
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: 10000
+      - key: NODE_ENV
+        value: production
+      - key: PYTHON_BIN
+        value: /opt/venv/bin/python
+    disk:
+      name: kaden-data
+      mountPath: /var/data
+      sizeGB: 1
